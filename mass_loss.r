@@ -9,3 +9,6 @@
 library(ggplot2)
 
 setwd("C:/internship/")     # Same version is also on RStudio
+
+mass_loss <- read.csv("1_mass_loss/mass_loss_sites_no_bag.csv")
+mass_loss
