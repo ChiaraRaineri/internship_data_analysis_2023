@@ -39,7 +39,7 @@ summary(mass_loss)
 # mass_loss <- na.omit(mass_loss)
 
 
-
+# For info on ANOVA https://www.scribbr.com/statistics/anova-in-r/
 
 
 
