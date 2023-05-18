@@ -53,19 +53,19 @@ summary(anova_red_t)
 
 # boxplots
 # litter
-ggplot(mass_data, aes(code, litter_massloss, fill=code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # green tea (l)
-ggplot(mass_data, aes(code, green_l_massloss, fill=code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggplot(mass_data, aes(code, green_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # red tea (l)
-ggplot(mass_data, aes(code, red_l_massloss, fill=code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggplot(mass_data, aes(code, red_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # green tea (t)
-ggplot(mass_data, aes(code, green_t_massloss, fill=code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggplot(mass_data, aes(code, green_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # red tea (t)
-ggplot(mass_data, aes(code, red_t_massloss, fill=code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
 
