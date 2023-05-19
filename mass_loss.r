@@ -38,7 +38,7 @@ summary(mass_data)
 # mass_data <- na.omit(mass_data)
 
 
-# one-way ANOVA
+# one-way ANOVA      # How to interpret these results?
 anova_litter <- aov(litter_massloss ~ code, data = mass_data)
 summary(anova_litter)
 anova_green_l <- aov(green_l_massloss ~ code, data = mass_data)
@@ -51,23 +51,29 @@ anova_red_t <- aov(red_t_massloss ~ code, data = mass_data)
 summary(anova_red_t)
 
 
-# boxplots
+# boxplots      # How to make them visually pleasant?
+pdf("plots.pdf", width = 6, height = 4)
 # litter
-ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+plitt <- ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
+ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # green tea (l)
-ggplot(mass_data, aes(code, green_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+pgl <- ggplot(mass_data, aes(code, green_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
+ggtitle("Green tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # red tea (l)
-ggplot(mass_data, aes(code, red_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+prl <- ggplot(mass_data, aes(code, red_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
+ggtitle("Red tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # green tea (t)
-ggplot(mass_data, aes(code, green_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+pgt <- ggplot(mass_data, aes(code, green_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggtitle("Green tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 # red tea (t)
-ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+prt <- ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+ggtitle("Red tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-
+dev.off()
 
 
 
