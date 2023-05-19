@@ -79,7 +79,7 @@ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
 scale_fill_brewer(palette="Paired")
 
 
-pdf("plots.pdf", width = 6, height = 4)
+pdf("plots.pdf", width = 12, height = 8)
 plitt
 pgl
 prl
@@ -88,7 +88,8 @@ prt
 dev.off()
 
 
-
+# How to compare them together with the same scale?
+boxplot(mass_data$litter_massloss, mass_data$green_l_massloss, mass_data$red_l_massloss, mass_data$green_t_massloss, mass_data$red_t_massloss)
 
 
 
