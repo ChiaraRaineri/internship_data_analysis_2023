@@ -19,7 +19,7 @@ setwd("C:/internship/")     # Same version is also on RStudio
 # This data frame contains raw data from the field and the calculation of percentage mass loss
 # Mass loss is calculated as (initial_weight -  final_weight) / initial_weight
 
-mass_data <- read.csv("1_mass_loss/mass_loss_sites_percentage.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
+mass_data <- read.csv("1_mass_loss/mass_loss_percentage.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
 mass_data
 
 str(data)   
@@ -41,6 +41,8 @@ summary(mass_data)
 # one-way ANOVA      # How to interpret these results?
 anova_litter <- aov(litter_massloss ~ code, data = mass_data)
 summary(anova_litter)
+anova_litter_cg <- aov(litter_cg_massloss ~ code, data = mass_data)
+summary(anova_litter_cg)
 anova_green_l <- aov(green_l_massloss ~ code, data = mass_data)
 summary(anova_green_l)
 anova_red_l <- aov(red_l_massloss ~ code, data = mass_data)
@@ -55,6 +57,11 @@ summary(anova_red_t)
 # litter
 plitt <- ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+scale_fill_brewer(palette="Paired")
+# litter common garden
+plittcg <- ggplot(mass_data, aes(code, litter_cg_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
+ggtitle("Litter from the common garden") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
 scale_fill_brewer(palette="Paired")
 # green tea (l)
@@ -81,6 +88,7 @@ scale_fill_brewer(palette="Paired")
 
 pdf("plots.pdf", width = 12, height = 8)
 plitt
+plittcg
 pgl
 prl
 pgt
