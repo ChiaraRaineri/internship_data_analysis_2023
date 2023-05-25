@@ -51,6 +51,10 @@ anova_green_t <- aov(green_t_massloss ~ code, data = mass_data)
 summary(anova_green_t)
 anova_red_t <- aov(red_t_massloss ~ code, data = mass_data)
 summary(anova_red_t)
+anova_mean_green <- aov(mean_green ~ code, data = mass_data)
+summary(anova_mean_green)
+anova_mean_red <- aov(mean_red ~ code, data = mass_data)
+summary(anova_mean_red)
 
 
 # boxplots      # How to make them visually pleasant?
@@ -84,6 +88,16 @@ prt <- ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(
 ggtitle("Red tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
 scale_fill_brewer(palette="Paired")
+# mean green teas from N and S
+pmg <- ggplot(mass_data, aes(code, mean_green, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+  ggtitle("Mean values of green teas") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired")
+# mean red teas from N and S
+pmr <- ggplot(mass_data, aes(code, mean_red, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
+  ggtitle("Mean values of red teas") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired")
 
 
 pdf("plots.pdf", width = 12, height = 8)
