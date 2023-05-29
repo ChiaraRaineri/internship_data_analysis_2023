@@ -19,7 +19,7 @@ setwd("C:/internship/")     # Same version is also on RStudio
 # This data frame contains raw data from the field and the calculation of percentage mass loss
 # Mass loss is calculated as (initial_weight -  final_weight) / initial_weight
 
-mass_data <- read.csv("1_mass_loss/mass_loss_percentage.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
+mass_data <- read.csv("1_mass_loss/mass_loss_percentage.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
 mass_data
 
 str(data)   
@@ -40,24 +40,26 @@ summary(mass_data)
 
 # one-way ANOVA      # How to interpret these results?
 anova_litter <- aov(litter_massloss ~ code, data = mass_data)
-summary(anova_litter)
+summary(anova_litter)  # significant (p-value = 0.0061)
 anova_litter_cg <- aov(litter_cg_massloss ~ code, data = mass_data)
-summary(anova_litter_cg)
+summary(anova_litter_cg)  # very significant (p-value = 1.03e-09)
+
 anova_green_l <- aov(green_l_massloss ~ code, data = mass_data)
-summary(anova_green_l)
-anova_red_l <- aov(red_l_massloss ~ code, data = mass_data)
-summary(anova_red_l)
+summary(anova_green_l)  # significant (p-value = 0.00027)
 anova_green_t <- aov(green_t_massloss ~ code, data = mass_data)
-summary(anova_green_t)
-anova_red_t <- aov(red_t_massloss ~ code, data = mass_data)
-summary(anova_red_t)
+summary(anova_green_t)  #very significant (p-value = 1.11e-06)
 anova_mean_green <- aov(mean_green ~ code, data = mass_data)
-summary(anova_mean_green)
+summary(anova_mean_green)  # very significant (p-value = 4.88e-08)
+
+anova_red_l <- aov(red_l_massloss ~ code, data = mass_data)
+summary(anova_red_l)  # non significant (p-value = 0.105)
+anova_red_t <- aov(red_t_massloss ~ code, data = mass_data)
+summary(anova_red_t)  # non significant (p-value = 0.685)
 anova_mean_red <- aov(mean_red ~ code, data = mass_data)
-summary(anova_mean_red)
+summary(anova_mean_red)  # non significant (p-value = 0.0722)
 
 
-# boxplots      # How to make them visually pleasant?
+# boxplots 
 # litter
 plitt <- ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
@@ -104,9 +106,11 @@ pdf("plots.pdf", width = 12, height = 8)
 plitt
 plittcg
 pgl
-prl
 pgt
+pmg
+prl
 prt
+pmr
 dev.off()
 
 
@@ -116,7 +120,6 @@ boxplot(mass_data$litter_massloss, mass_data$green_l_massloss, mass_data$red_l_m
 
 
 
-https://www.scribbr.com/statistics/anova-in-r/
 
 
 
