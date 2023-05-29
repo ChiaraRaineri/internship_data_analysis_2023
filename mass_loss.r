@@ -114,8 +114,7 @@ pmr
 dev.off()
 
 
-# How to compare them together with the same scale?
-boxplot(mass_data$litter_massloss, mass_data$green_l_massloss, mass_data$red_l_massloss, mass_data$green_t_massloss, mass_data$red_t_massloss)
+
 
 
 
