@@ -108,5 +108,9 @@ aictab(model_mean_red, modnames = model_names)  # The "plus_river" model is the 
 
 
 
+par(mfrow=c(2,2))
+plot(anova2_litter)
+par(mfrow=c(1,1))
+
 
 
