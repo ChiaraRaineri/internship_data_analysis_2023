@@ -4,6 +4,7 @@ library(tidyverse)
 library(broom)
 library(AICcmodavg)
 
+setwd("C:/internship/")
 
 # I separated the "code" independent variable in different variables:
 # name of the river = OM, OD, TR
@@ -107,10 +108,12 @@ model_mean_red <- list(anova2_mean_red, anova2_mean_red_comb, anova2_mean_red_ri
 aictab(model_mean_red, modnames = model_names)  # The "plus_river" model is the best fit
 
 
-
+# Check for homoscedasticity
 par(mfrow=c(2,2))
-plot(anova2_litter)
+plot(anova2_litter_comb)
 par(mfrow=c(1,1))
+
+
 
 
 
