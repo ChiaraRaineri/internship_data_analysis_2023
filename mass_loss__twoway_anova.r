@@ -18,7 +18,19 @@ str(mass_data_anova)
 summary(mass_data_anova)
 
 
-# two-way ANOVA
+# Shapiro-Wilk test
+shapiro.test(mass_data_anova$litter_massloss)  # p-value = 0.5066
+shapiro.test(mass_data_anova$litter_cg_massloss)  # p-value = 0.0002447   (!)
+shapiro.test(mass_data_anova$green_l_massloss)  # p-value = 0.03206   (!)
+shapiro.test(mass_data_anova$green_t_massloss)  # p-value = 0.2352
+shapiro.test(mass_data_anova$mean_green)  # p-value = 0.1625
+shapiro.test(mass_data_anova$red_l_massloss)  # p-value = 0.6639
+shapiro.test(mass_data_anova$red_t_massloss)  # p-value = 2.877e-11   (!)
+shapiro.test(mass_data_anova$mean_red)  # p-value = 5.2e-06   (!)
+
+
+
+# two-way ANOVA  (data are not normally distributed!!)
 
 # litter
 anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)
