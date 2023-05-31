@@ -104,7 +104,7 @@ pmr <- ggplot(mass_data, aes(code, mean_red, fill = code)) + geom_boxplot(show.l
   scale_fill_brewer(palette="Paired")
 
 
-pdf("plots.pdf", width = 12, height = 8)
+pdf("plots_raw_data.pdf", width = 12, height = 8)
 plitt
 plittcg
 pgl
