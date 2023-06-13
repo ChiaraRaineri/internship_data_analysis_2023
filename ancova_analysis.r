@@ -4,6 +4,7 @@ library(tidyverse)
 library(broom)
 library(AICcmodavg)
 
+# This spreadsheet contains the initial and final weight as well as the mass loss percentage
 data_ancova <- read.csv("1_mass_loss/mass_loss_for_ancova.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", 
                                                                                             "numeric", "numeric", "numeric", "numeric", 
                                                                                             "numeric", "numeric", "numeric", "numeric", 
@@ -16,22 +17,32 @@ summary(data_ancova)
 
 
 
-# analysis of covariance (see p. 489), using final weight as the response variable and initial weight as a covariate, or
+# analysis of covariance (see p. 498), using final weight as the response variable and initial weight as a covariate, or
 # by specifying the response variable as a relative growth rate, measured as log(final weight/initial weight),
 # both of which can be analysed with normal errors without further transformation.
 
-attach(data_ancova)
+attach(data_ancova)   # So I can access variables of a DataFrame without invoking any function or method
 names(data_ancova)                                                                                            
 
-#LITTER
-m1_litter <- lm(litter_final ~ restoration * litter_initial * management)
-summary(m1_litter)
+#LITTER (just as in the book)
 
-m2_litter <- step(m1_litter)
-summary(m2_litter)
+# m stands for model
+# The final weight is the response variable, restoration and management are two categorical explanatory variables and the initial weight is a continuous covariate
+m1_litter <- lm(litter_final ~ restoration * litter_initial * management)   
+# m1_litter is the maximal model (the most complicated model, then I will simplify it by removing 
+# non-significant terms until I'm left with a minimal adequate model, in which all the parameters are significantly different from zero)
+summary(m1_litter)
+# No relationship is significant
+
+
+# The next step is to delete the non-significant interaction terms from the model (I get the minimal adequate model)
+m2_litter <- step(m1_litter)  # I don't understand this
+summary(m2_litter)  # How do I interpret these?
 
 anova(m2_litter)     # does this means that restoration and management alone do not have an effect on final weight, bu their combination does?
 
+
+# After an analysis of covariance, it is useful to draw the fitted lines through a scatterplot, with each factor level represented by different plotting symbols and line types
 plot(litter_initial, litter_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
 xv<-c(1, 5)
 for (i in 1:2) {
@@ -40,6 +51,15 @@ for (i in 1:2) {
     yv<-a + b * xv
     lines(xv, yv, lty = 2)
   } }
+# I guess the black is "managed" and the red is "unmanaged"? (how do I know? levels(management))
+# I guess the circle is "near_natural" and the triangle is "restored"?
+# How do I interpret this graph?
+
+
+
+
+
+
 
 
 
@@ -49,6 +69,17 @@ plot(m1_litter, add.smooth = FALSE, which = 1)  # no evidence of a systematic tr
 plot(m1_litter, which = 2)  # normal probability plot
 plot(m1_litter, add.smooth = FALSE, which = 3)  # no systematic pattern in the size of the residuals
 anova(m1_litter)
+
+
+
+
+
+
+
+
+
+
+
 
 
 # GREEN TEA NORTH
