@@ -23,49 +23,74 @@ summary(data_ancova)
 attach(data_ancova)
 names(data_ancova)                                                                                            
 
-m1 <- lm(litter_final ~ restoration * litter_initial * management)
-summary(m1)
+#LITTER
+m1_litter <- lm(litter_final ~ restoration * litter_initial * management)
+summary(m1_litter)
 
-m2 <- step(m1)
-summary(m2)
+m2_litter <- step(m1_litter)
+summary(m2_litter)
 
-anova(m2)     # does this means that restoration and management alone do not have an effect on final weight, bu their combination does?
+anova(m2_litter)     # does this means that restoration and management alone do not have an effect on final weight, bu their combination does?
 
 plot(litter_initial, litter_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
 xv<-c(1, 5)
 for (i in 1:2) {
   for (j in 1:4){
-    a<-coef(m2)[1] + (i>1) * coef(m2)[2] + (j>1) * coef(m2)[j+2]; b<-coef(m2)[3]
+    a<-coef(m2_litter)[1] + (i>1) * coef(m2_litter)[2] + (j>1) * coef(m2_litter)[j+2]; b<-coef(m2_litter)[3]
     yv<-a + b * xv
     lines(xv, yv, lty = 2)
   } }
 
-### Order matters?
-
-m11 <- lm(litter_final~management*litter_initial*restoration)
-summary(m11)
-
-m22 <- step(m11)
-summary(m22)
-
-anova(m22)     # does this means that restoration and management alone do not have an effect on final weight, bu their combination does?
-
-plot(litter_initial, litter_final, col=as.numeric(restoration),pch=(15+as.numeric(management)))
-xv<-c(1,5)
-for (i in 1:2) {
-  for (j in 1:4){
-    a<-coef(m22)[1]+(i>1)* coef(m22)[2]+(j>1)*coef(m22)[j+2];b<-coef(m22)[3]
-    yv<-a+b*xv
-    lines(xv,yv,lty=2)
-  } }
 
 
 # Another way from https://dzchilds.github.io/stats-for-bio/two-way-ancova-in-r.html 
 
-plot(m1, add.smooth = FALSE, which = 1)  # no evidence of a systematic trend here so the linearity assumption is fine
-plot(m1, which = 2)  # normal probability plot
-plot(m1, add.smooth = FALSE, which = 3)  # no systematic pattern in the size of the residuals
-anova(m1)
+plot(m1_litter, add.smooth = FALSE, which = 1)  # no evidence of a systematic trend here so the linearity assumption is fine
+plot(m1_litter, which = 2)  # normal probability plot
+plot(m1_litter, add.smooth = FALSE, which = 3)  # no systematic pattern in the size of the residuals
+anova(m1_litter)
+
+
+# GREEN TEA NORTH
+m1_green_l <- lm(green_l_final ~ restoration * green_l_initial * management)
+summary(m1_green_l)
+
+m2_green_l <- step(m1_green_l)
+summary(m2_green_l)
+
+anova(m2_green_l)  
+
+plot(green_l_initial, green_l_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
+xv<-c(1, 5)
+for (i in 1:2) {
+  for (j in 1:4){
+    a<-coef(m2_green_l)[1] + (i>1) * coef(m2_green_l)[2] + (j>1) * coef(m2_green_l)[j+2]; b<-coef(m2_green_l)[3]
+    yv<-a + b * xv
+    lines(xv, yv, lty = 2)
+  } }
+
+
+# RED TEA NORTH
+m1_red_l <- lm(red_l_final ~ restoration * red_l_initial * management)
+summary(m1_red_l)
+
+m2_red_l <- step(m1_red_l)
+summary(m2_red_l)
+
+anova(m2_red_l)    
+
+plot(red_l_initial, red_l_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
+xv<-c(1, 5)
+for (i in 1:2) {
+  for (j in 1:4){
+    a<-coef(m2_red_l)[1] + (i>1) * coef(m2_red_l)[2] + (j>1) * coef(m2_red_l)[j+2]; b<-coef(m2_red_l)[3]
+    yv<-a + b * xv
+    lines(xv, yv, lty = 2)
+  } }
+
+
+
+
 
 
 
