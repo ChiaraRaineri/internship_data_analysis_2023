@@ -47,45 +47,45 @@ summary(mass_data)
 plitt <- ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # litter common garden
 plittcg <- ggplot(mass_data, aes(code, litter_cg_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Litter from the common garden") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # green tea (l)
 pgl <- ggplot(mass_data, aes(code, green_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Green tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # red tea (l)
 prl <- ggplot(mass_data, aes(code, red_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
 ggtitle("Red tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # green tea (t)
 pgt <- ggplot(mass_data, aes(code, green_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 ggtitle("Green tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # red tea (t)
 prt <- ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
 ggtitle("Red tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
 theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired")
+scale_fill_brewer(palette="Paired") + ylim(0,1)
 # mean green teas from N and S
 pmg <- ggplot(mass_data, aes(code, mean_green, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
   ggtitle("Mean values of green teas") + theme(plot.title = element_text(hjust = 0.5)) + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  scale_fill_brewer(palette="Paired")
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
 # mean red teas from N and S
 pmr <- ggplot(mass_data, aes(code, mean_red, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
   ggtitle("Mean values of red teas") + theme(plot.title = element_text(hjust = 0.5)) + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  scale_fill_brewer(palette="Paired")
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
 
 
-pdf("plots_raw_data.pdf", width = 12, height = 8)
+pdf("plots_raw_data_same_scale.pdf", width = 12, height = 8)
 plitt
 plittcg
 pgl
