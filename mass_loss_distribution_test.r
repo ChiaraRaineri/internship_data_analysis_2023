@@ -70,7 +70,7 @@ hist(data_dist$mean_red, xlab = "Percentage of mass loss", main = "Red tea")
 ##########
 
 # Homoscedasticity test
-# H0 = homoscedacity is present
+# H0 = homoscedacity is present (residuals are distributed with equal variance)
 
 ### LITTER ###
 
