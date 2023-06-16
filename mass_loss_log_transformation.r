@@ -13,10 +13,9 @@ str(mass_data_anova)
 
 # I used the steps in this website https://dzchilds.github.io/stats-for-bio/data-transformations.html
 
-# LITTER
+# LITTER # 
 
-# mod_litter <- lm(litter_massloss ~ restoration, data = mass_data_anova)
-# plot(mod_litter, which = 2)
+# This is not really useful because Litter data have a normal distribution
 
 mass_data_anova <- mutate(mass_data_anova, loglitter_massloss = log10(litter_massloss))
 # Now I have a new column with the transformed values (I transformed a percentage)
@@ -36,20 +35,38 @@ summary(anova2_litter_comb_log)  # restoration:management is slightly significan
 anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)
 summary(anova2_litter_comb)
 
-# Adding "river" to anova
-anova2_litter_river_log <- aov(loglitter_massloss ~ restoration + management + river, data = mass_data_anova)
-summary(anova2_litter_river_log)
-anova2_litter_river <- aov(litter_massloss ~ restoration + management + river, data = mass_data_anova)
-summary(anova2_litter_river)
-# No difference
+
+
+# LITTER COMMON GARDEN #
+
+# Litter data from common garden don't have a normal distribution
+
+mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))
+
+
+# Comparison between normal two_way anova and log data two-way anova
+anova2_littercg_log <- aov(loglitter_cg_massloss ~ restoration + management, data = mass_data_anova)  # New anova
+summary(anova2_littercg_log)
+anova2_litter_cg <- aov(litter_cg_massloss ~ restoration + management, data = mass_data_anova)
+summary(anova2_litter_cg)
+# F-value and p-value are not too different in the two models
+
+# Combined anova
+anova2_littercg_comb_log <- aov(loglitter_cg_massloss ~ restoration * management, data = mass_data_anova)
+summary(anova2_littercg_comb_log)  # restoration:management is slightly significant (in the normal anova it wasn't)
+anova2_litter_cg_comb <- aov(litter_cg_massloss ~ restoration * management, data = mass_data_anova)
+summary(anova2_litter_cg_comb)
 
 
 
+# MEAN GREEN #
 
-# MEAN GREEN
+# Data are not normally distributed
+
 mass_data_anova <- mutate(mass_data_anova, logmean_green = log10(mean_green))
+
 anova2_green_log <- aov(logmean_green ~ restoration + management, data = mass_data_anova)
 summary(anova2_green_log)
 anova2_mean_green <- aov(mean_green ~ restoration + management, data = mass_data_anova)
 summary(anova2_mean_green)
-# No difference
+
