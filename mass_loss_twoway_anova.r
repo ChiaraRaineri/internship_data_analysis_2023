@@ -29,7 +29,45 @@ shapiro.test(mass_data_anova$red_t_massloss)  # p-value = 2.877e-11   (!)
 shapiro.test(mass_data_anova$mean_red)  # p-value = 5.2e-06   (!)
 
 
+## TWO-WAY ANOVA ##
 
+# Litter data and mean red tea data respect homoscedasticity, so I can perform the two-way anova without further transformations
+
+# Litter
+anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)
+summary(anova2_litter)  # p-value restoration = 0.119  # p-value management = 0.567
+anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)
+summary(anova2_litter_comb)  # p-value restoration:management = 0.013
+
+# Red tea
+anova2_mean_red <- aov(mean_red ~ restoration + management, data = mass_data_anova)
+summary(anova2_mean_red)  # p-value restoration = 0.971  # p-value management = 0.315
+anova2_mean_red_comb <- aov(mean_red ~ restoration * management, data = mass_data_anova)
+summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### FIRST DRAFT ###
 # two-way ANOVA  (data are not normally distributed!!)
 
 # litter
