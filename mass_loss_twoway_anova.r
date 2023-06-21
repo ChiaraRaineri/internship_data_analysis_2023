@@ -42,7 +42,38 @@ anova2_mean_red_comb <- aov(mean_red ~ restoration * management, data = mass_dat
 summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
 
 
+# To perform anova on litter common garden data and mean green tea data I have to transform them
+# log transformation
 
+# Litter common garden
+mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))
+
+
+# Comparison between normal two_way anova and log data two-way anova
+anova2_littercg_log <- aov(loglitter_cg_massloss ~ restoration + management, data = mass_data_anova)  # New anova
+summary(anova2_littercg_log)
+anova2_litter_cg <- aov(litter_cg_massloss ~ restoration + management, data = mass_data_anova)
+summary(anova2_litter_cg)
+# F-value and p-value are not too different in the two models
+
+# Combined anova
+anova2_littercg_comb_log <- aov(loglitter_cg_massloss ~ restoration * management, data = mass_data_anova)
+summary(anova2_littercg_comb_log)  # restoration:management is slightly significant (in the normal anova it wasn't)
+anova2_litter_cg_comb <- aov(litter_cg_massloss ~ restoration * management, data = mass_data_anova)
+summary(anova2_litter_cg_comb)
+
+
+
+# MEAN GREEN #
+
+# Data are not normally distributed
+
+mass_data_anova <- mutate(mass_data_anova, logmean_green = log10(mean_green))
+
+anova2_green_log <- aov(logmean_green ~ restoration + management, data = mass_data_anova)
+summary(anova2_green_log)
+anova2_mean_green <- aov(mean_green ~ restoration + management, data = mass_data_anova)
+summary(anova2_mean_green)
 
 
 
