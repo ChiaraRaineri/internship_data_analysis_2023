@@ -20,6 +20,7 @@ summary(mass_data_anova)
 
 data_dist <- read.csv("1_mass_loss/mass_loss_for_distribution.csv", header = TRUE, colClasses = c("factor", "factor", "numeric", "numeric", "numeric", "numeric"))
 str(data_dist)
+summary(data_dist)
 
 
 # Shapiro-Wilk test
@@ -55,7 +56,7 @@ summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
 
 # Transformation #
 mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))  # Now the data are log transformed
-data_dist <- mutate(data_dist, loglitter_cg_massloss = log10(litter_cg_massloss))
+data_dist <- mutate(data_dist, loglitter_cg_massloss = log10(litter_cg_massloss)) 
 # Let's see if homoscedasticity is present
 # One explanatory variable
 mod_litter_cg_log <- lm(loglitter_cg_massloss ~ treatment, data = data_dist, na.action = na.exclude)
@@ -107,14 +108,38 @@ par(mfrow = c(2, 2))
 plot(mod_green_log2)
 # I still can't perform anova with green tea data
 
+# Let's perform ANCOVA analysis using final weight as the response variable and initial weight as a covariate
+data_ancova <- read.csv("1_mass_loss/mass_loss_for_ancova.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", 
+                                                                                            "numeric", "numeric", "numeric", "numeric", 
+                                                                                            "numeric", "numeric", "numeric", "numeric", 
+                                                                                            "numeric", "numeric", "numeric", "numeric", 
+                                                                                            "numeric", "numeric"))
+str(data_ancova)
+summary(data_ancova)
+attach(data_ancova)
+names(data_ancova) 
+
+# I followed the R book 
+m1_green <- lm(green_final ~ restoration * green_initial * management)  # Maximal model
+summary(m1_green)
+
+m2_green <- step(m1_green)  # Model semplification
+summary(m2_green)
+
+anova(m2_green)  # p-value restoration = 0.002529
+
+plot(green_initial, green_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
+xv<-c(1, 5)
+for (i in 1:2) {
+  for (j in 1:4){
+    a<-coef(m2_green)[1] + (i>1) * coef(m2_green)[2] + (j>1) * coef(m2_green)[j+2]; b<-coef(m2_green)[3]
+    yv<-a + b * xv
+    lines(xv, yv, lty = 2)
+  } }
 
 
 
 
-anova2_green_log <- aov(logmean_green ~ restoration + management, data = mass_data_anova)
-summary(anova2_green_log)
-anova2_mean_green <- aov(mean_green ~ restoration + management, data = mass_data_anova)
-summary(anova2_mean_green)
 
 
 
@@ -133,9 +158,7 @@ summary(anova2_mean_green)
 
 
 
-
-
-### FIRST DRAFT ###
+### FIRST DRAFT, NOT CORRECT ###
 # two-way ANOVA  (data are not normally distributed!!)
 
 # litter
