@@ -3,6 +3,7 @@ library(ggpubr)
 library(tidyverse)
 library(broom)
 library(AICcmodavg)
+library(lmtest)
 
 setwd("C:/internship/")
 
@@ -17,6 +18,9 @@ mass_data_anova <- read.csv("1_mass_loss/mass_loss_for_anova.csv", header = TRUE
 str(mass_data_anova)
 summary(mass_data_anova)
 
+data_dist <- read.csv("1_mass_loss/mass_loss_for_distribution.csv", header = TRUE, colClasses = c("factor", "factor", "numeric", "numeric", "numeric", "numeric"))
+str(data_dist)
+
 
 # Shapiro-Wilk test
 shapiro.test(mass_data_anova$litter_massloss)  # p-value = 0.5066
@@ -29,46 +33,83 @@ shapiro.test(mass_data_anova$mean_red)  # p-value = 5.2e-06   (!)
 
 # Litter data and mean red tea data respect homoscedasticity, so I can perform the two-way anova without further transformations
 
-# Litter
+## Litter ##
 anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)
 summary(anova2_litter)  # p-value restoration = 0.119  # p-value management = 0.567
 anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)
 summary(anova2_litter_comb)  # p-value restoration:management = 0.013
 
-# Red tea
+## Red tea ##
 anova2_mean_red <- aov(mean_red ~ restoration + management, data = mass_data_anova)
 summary(anova2_mean_red)  # p-value restoration = 0.971  # p-value management = 0.315
 anova2_mean_red_comb <- aov(mean_red ~ restoration * management, data = mass_data_anova)
 summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
 
 
+
 # To perform anova on litter common garden data and mean green tea data I have to transform them
 # log transformation
 
-# Litter common garden
-mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))
 
+## Litter common garden ##
 
-# Comparison between normal two_way anova and log data two-way anova
-anova2_littercg_log <- aov(loglitter_cg_massloss ~ restoration + management, data = mass_data_anova)  # New anova
-summary(anova2_littercg_log)
-anova2_litter_cg <- aov(litter_cg_massloss ~ restoration + management, data = mass_data_anova)
-summary(anova2_litter_cg)
-# F-value and p-value are not too different in the two models
+# Transformation #
+mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))  # Now the data are log transformed
+data_dist <- mutate(data_dist, loglitter_cg_massloss = log10(litter_cg_massloss))
+# Let's see if homoscedasticity is present
+# One explanatory variable
+mod_litter_cg_log <- lm(loglitter_cg_massloss ~ treatment, data = data_dist, na.action = na.exclude)
+summary(mod_litter_cg_log)
+# Breusch-Pagan test
+bptest(mod_litter_cg_log)   # p-value = 0.4237
+# I can't reject the null hypothesis (homoscedasticity is present) 
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_litter_cg_log)
+# Two explanatory variables
+mod_litter_cg_log2 <- lm(loglitter_cg_massloss ~ restoration + management, data = mass_data_anova, na.action = na.exclude)
+summary(mod_litter_cg_log2)
+# Breusch-Pagan test
+bptest(mod_litter_cg_log2)   # p-value = 0.221 (homoscedasticity is present)
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_litter_cg_log2)
 
-# Combined anova
+# Two-way anova #
+anova2_littercg_log <- aov(loglitter_cg_massloss ~ restoration + management, data = mass_data_anova)  
+summary(anova2_littercg_log)  # p-value restoration = 0.000771  # p-value management = 0.048263
 anova2_littercg_comb_log <- aov(loglitter_cg_massloss ~ restoration * management, data = mass_data_anova)
-summary(anova2_littercg_comb_log)  # restoration:management is slightly significant (in the normal anova it wasn't)
-anova2_litter_cg_comb <- aov(litter_cg_massloss ~ restoration * management, data = mass_data_anova)
-summary(anova2_litter_cg_comb)
+summary(anova2_littercg_comb_log)  # p-value restoration:management = 0.747
+
+
+## Green tea ##
+
+# Transformation #
+mass_data_anova <- mutate(mass_data_anova, logmean_green = log10(mean_green))  # Now the data are log transformed
+data_dist <- mutate(data_dist, logmean_green = log10(mean_green))
+# Let's see if homoscedasticity is present
+# One explanatory variable
+mod_green_log <- lm(logmean_green ~ treatment, data = data_dist, na.action = na.exclude)
+summary(mod_green_log)
+# Breusch-Pagan test
+bptest(mod_green_log)   # p-value = 0.01718
+# I reject the null hypothesis (heteroscedasticity is present) 
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_green_log)
+# Two explanatory variables
+mod_green_log2 <- lm(logmean_green ~ restoration + management, data = mass_data_anova, na.action = na.exclude)
+summary(mod_green_log2)
+# Breusch-Pagan test
+bptest(mod_green_log2)   # p-value = 0.02067 (heteroscedasticity is present)
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_green_log2)
+# I still can't perform anova with green tea data
 
 
 
-# MEAN GREEN #
 
-# Data are not normally distributed
-
-mass_data_anova <- mutate(mass_data_anova, logmean_green = log10(mean_green))
 
 anova2_green_log <- aov(logmean_green ~ restoration + management, data = mass_data_anova)
 summary(anova2_green_log)
