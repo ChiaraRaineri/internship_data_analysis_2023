@@ -12,12 +12,15 @@ setwd("C:/internship/")
 # management type = managed, unmanaged
 # restoration type = near_natural, restored
 
+# This data set contains the mass loss data, the restoration type (restored, near-natural) and the management (managed, unmanaged), as well as the river valley (TR, OM, OD)
 mass_data_anova <- read.csv("1_mass_loss/mass_loss_for_anova.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", 
                                                                                             "numeric", "numeric", "numeric", "numeric", 
                                                                                             "numeric", "numeric", "numeric", "numeric"))
 str(mass_data_anova)
 summary(mass_data_anova)
 
+# This data set contains only the mass loss data and the treatment (RM, RU, NM, NU)
+# I need it to check if there is homoscedasticity in the log-transformed data
 data_dist <- read.csv("1_mass_loss/mass_loss_for_distribution.csv", header = TRUE, colClasses = c("factor", "factor", "numeric", "numeric", "numeric", "numeric"))
 str(data_dist)
 summary(data_dist)
@@ -35,9 +38,9 @@ shapiro.test(mass_data_anova$mean_red)  # p-value = 5.2e-06   (!)
 # Litter data and mean red tea data respect homoscedasticity, so I can perform the two-way anova without further transformations
 
 ## Litter ##
-anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)
+anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)   # This model (additive) assumes there is no interaction between the two independent variables
 summary(anova2_litter)  # p-value restoration = 0.119  # p-value management = 0.567
-anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)
+anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)  # This model assumes that there is an interaction between the two independent variables
 summary(anova2_litter_comb)  # p-value restoration:management = 0.013
 
 ## Red tea ##
