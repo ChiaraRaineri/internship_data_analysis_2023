@@ -111,35 +111,11 @@ par(mfrow = c(2, 2))
 plot(mod_green_log2)
 # I still can't perform anova with green tea data
 
-# Let's perform ANCOVA analysis using final weight as the response variable and initial weight as a covariate
-data_ancova <- read.csv("1_mass_loss/mass_loss_for_ancova.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", 
-                                                                                            "numeric", "numeric", "numeric", "numeric", 
-                                                                                            "numeric", "numeric", "numeric", "numeric", 
-                                                                                            "numeric", "numeric", "numeric", "numeric", 
-                                                                                            "numeric", "numeric"))
-str(data_ancova)
-summary(data_ancova)
-attach(data_ancova)
-names(data_ancova) 
-
-# I followed the R book 
-m1_green <- lm(green_final ~ restoration * green_initial * management)  # Maximal model
-summary(m1_green)
-
-m2_green <- step(m1_green)  # Model semplification
-summary(m2_green)
-
-anova(m2_green)  # p-value restoration = 0.002529
-
-plot(green_initial, green_final, col=as.numeric(management), pch=(15 + as.numeric(restoration)))
-xv<-c(1, 5)
-for (i in 1:2) {
-  for (j in 1:4){
-    a<-coef(m2_green)[1] + (i>1) * coef(m2_green)[2] + (j>1) * coef(m2_green)[j+2]; b<-coef(m2_green)[3]
-    yv<-a + b * xv
-    lines(xv, yv, lty = 2)
-  } }
-
+# Even though the data are not normally distributed, I'll do the two-way anova as usual, being extra careful with the results
+anova2_mean_green <- aov(mean_green ~ restoration + management, data = mass_data_anova)
+summary(anova2_mean_green)  # p-value restoration = 0.00189  # p-value management = 0.37930
+anova2_mean_green_comb <- aov(mean_green ~ restoration * management, data = mass_data_anova)
+summary(anova2_mean_green_comb)  # p-value restoration:management = 0.15350
 
 
 
