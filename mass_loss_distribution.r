@@ -86,15 +86,6 @@ bptest(mod_litter)   # p-value = 0.1089
 par(mfrow = c(2, 2))
 plot(mod_litter)
 
-residuals_plot_litter <- ggplot(data = data_dist, aes(x = fitted(mod_litter), y = resid(mod_litter))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_litter)
-
 
 # Two explanatory variables #
 mass_data_anova <- read.csv("1_mass_loss/mass_loss_for_anova.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", 
@@ -109,14 +100,7 @@ bptest(mod_litter2)   # p-value = 0.09099
 par(mfrow = c(2, 2))
 plot(mod_litter2)
 
-residuals_plot_litter2 <- ggplot(data = mass_data_anova, aes(x = fitted(mod_litter2), y = resid(mod_litter2))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
 
-print(residuals_plot_litter2)
 
 
 
@@ -134,15 +118,6 @@ bptest(mod_litter_cg)   # p-value = 0.03739
 par(mfrow = c(2, 2))
 plot(mod_litter_cg)
 
-residuals_plot_littercg <- ggplot(data = data_dist, aes(x = fitted(mod_litter_cg), y = resid(mod_litter_cg))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_littercg)
-
 
 # Two explanatory variables #
 mod_litter_cg2 <- lm(litter_cg_massloss ~ restoration + management, data = mass_data_anova, na.action = na.exclude)
@@ -154,14 +129,7 @@ bptest(mod_litter_cg2)   # p-value = 0.008113
 par(mfrow = c(2, 2))
 plot(mod_litter_cg2)
 
-residuals_plot_litter_cg2 <- ggplot(data = mass_data_anova, aes(x = fitted(mod_litter_cg2), y = resid(mod_litter_cg2))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
 
-print(residuals_plot_litter_cg2)
 
 
 
@@ -180,15 +148,6 @@ bptest(mod_green)   # p-value = 0.01214
 par(mfrow = c(2, 2))
 plot(mod_green)
 
-residuals_plot_green <- ggplot(data = data_dist, aes(x = fitted(mod_green), y = resid(mod_green))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_green)
-
 
 # Two explanatory variables #
 mod_green2 <- lm(mean_green ~ restoration + management, data = mass_data_anova, na.action = na.exclude)
@@ -200,14 +159,6 @@ bptest(mod_green2)   # p-value = 0.01157
 par(mfrow = c(2, 2))
 plot(mod_green2)
 
-residuals_plot_green2 <- ggplot(data = mass_data_anova, aes(x = fitted(mod_green2), y = resid(mod_green2))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_green2)
 
 
 
@@ -227,15 +178,6 @@ bptest(mod_red)   # p-value = 0.6184
 par(mfrow = c(2, 2))
 plot(mod_red)
 
-residuals_plot_red <- ggplot(data = data_dist, aes(x = fitted(mod_red), y = resid(mod_red))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_red)
-
 
 # Two explanatory variables #
 mod_red2 <- lm(mean_red ~ restoration + management, data = mass_data_anova, na.action = na.exclude)
@@ -246,15 +188,6 @@ bptest(mod_red2)   # p-value = 0.4688
 # Visual method
 par(mfrow = c(2, 2))
 plot(mod_red2)
-
-residuals_plot_red2 <- ggplot(data = mass_data_anova, aes(x = fitted(mod_red2), y = resid(mod_red2))) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE, linetype = "dashed") +
-  labs(x = "Fitted Values", y = "Residuals") +
-  ggtitle("Residuals vs Fitted Values") +
-  theme_minimal()
-
-print(residuals_plot_red2)
 
 
 
