@@ -4,6 +4,8 @@ library(tidyverse)
 library(broom)
 library(AICcmodavg)
 library(lmtest)
+library(dplyr)
+library(gridExtra)
 
 setwd("C:/internship/")
 
@@ -37,17 +39,51 @@ shapiro.test(mass_data_anova$mean_red)  # p-value = 5.2e-06   (!)
 
 # Litter data and mean red tea data respect homoscedasticity, so I can perform the two-way anova without further transformations
 
-## Litter ##
+
+#### Litter ####
 anova2_litter <- aov(litter_massloss ~ restoration + management, data = mass_data_anova)   # This model (additive) assumes there is no interaction between the two independent variables
 summary(anova2_litter)  # p-value restoration = 0.119  # p-value management = 0.567
 anova2_litter_comb <- aov(litter_massloss ~ restoration * management, data = mass_data_anova)  # This model assumes that there is an interaction between the two independent variables
 summary(anova2_litter_comb)  # p-value restoration:management = 0.013
 
-## Red tea ##
+# Tukey's test
+tukey_litter <- TukeyHSD(anova2_litter)
+tukey_litter
+
+# Table with factors, means and standard deviation using dplyr package
+# First I have to remove all the NAs from the data frame
+mass_data_anova <- na.omit(mass_data_anova)
+# Table
+table_litter <- group_by(mass_data_anova, restoration, management) %>%
+  summarise(mean=mean(litter_massloss), sd=sd(litter_massloss)) %>%
+  arrange(desc(mean))
+table_litter
+
+# Barplot
+# https://statdoe.com/barplot-for-two-factors-in-r/
+pmean_litt <-  ggplot(table_litter, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Litter")
+
+
+#### Red tea ####
 anova2_mean_red <- aov(mean_red ~ restoration + management, data = mass_data_anova)
 summary(anova2_mean_red)  # p-value restoration = 0.971  # p-value management = 0.315
 anova2_mean_red_comb <- aov(mean_red ~ restoration * management, data = mass_data_anova)
 summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
+
+# Tukey's test
+tukey_red <- TukeyHSD(anova2_mean_red)
+tukey_red
+
+# Table
+table_red <- group_by(mass_data_anova, restoration, management) %>%
+  summarise(mean=mean(mean_red), sd=sd(mean_red)) %>%
+  arrange(desc(mean))
+table_red
+
+# Barplot
+pmean_red <- ggplot(table_red, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Red tea")
 
 
 
@@ -55,7 +91,7 @@ summary(anova2_mean_red_comb)  # p-value restoration:management = 0.747
 # log transformation
 
 
-## Litter common garden ##
+#### Litter common garden ####
 
 # Transformation #
 mass_data_anova <- mutate(mass_data_anova, loglitter_cg_massloss = log10(litter_cg_massloss))  # Now the data are log transformed
@@ -85,8 +121,23 @@ summary(anova2_littercg_log)  # p-value restoration = 0.000771  # p-value manage
 anova2_littercg_comb_log <- aov(loglitter_cg_massloss ~ restoration * management, data = mass_data_anova)
 summary(anova2_littercg_comb_log)  # p-value restoration:management = 0.747
 
+# Tukey's test
+tukey_cg <- TukeyHSD(anova2_littercg_log)
+tukey_cg
 
-## Green tea ##
+# Table
+table_cg <- group_by(mass_data_anova, restoration, management) %>%
+  summarise(mean=mean(litter_cg_massloss), sd=sd(litter_cg_massloss)) %>%
+  arrange(desc(mean))
+table_cg
+
+# Barplot
+pmean_cg <- ggplot(table_cg, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Litter common garden")
+
+
+
+#### Green tea ####
 
 # Transformation #
 mass_data_anova <- mutate(mass_data_anova, logmean_green = log10(mean_green))  # Now the data are log transformed
@@ -117,9 +168,29 @@ summary(anova2_mean_green)  # p-value restoration = 0.00189  # p-value managemen
 anova2_mean_green_comb <- aov(mean_green ~ restoration * management, data = mass_data_anova)
 summary(anova2_mean_green_comb)  # p-value restoration:management = 0.15350
 
+# Tukey's test
+tukey_green <- TukeyHSD(anova2_mean_green)
+tukey_green
+
+# Table
+table_green <- group_by(mass_data_anova, restoration, management) %>%
+  summarise(mean=mean(mean_green), sd=sd(mean_green)) %>%
+  arrange(desc(mean))
+table_green
+
+# Barplot
+pmean_green <- ggplot(table_green, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Green tea")
 
 
-
+# Plotting all the barplots together
+pdf("mean_differences.pdf", width = 12, height = 8)
+pmean_litt
+pmean_red
+pmean_cg
+pmean_green
+grid.arrange(pmean_litt, pmean_red, pmean_cg, pmean_green, nrow=2)
+dev.off()
 
 
 
