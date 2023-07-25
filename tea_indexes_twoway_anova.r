@@ -121,7 +121,7 @@ tukey_S
 table_S <- group_by(tbi_data, restoration, management) %>%
   summarise(mean=mean(S), sd=sd(S)) %>%
   arrange(desc(mean))
-table_S     # MANCANO GLI UNMANAGED
+table_S
 
 # Barplot
 pmean_S <- ggplot(table_S, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
