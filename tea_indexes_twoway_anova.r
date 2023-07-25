@@ -129,6 +129,42 @@ geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_b
 
 
 
+# k data respect homoscedasticity, so I can perform the two-way anova without further transformations
+
+#### k ####
+
+anova_k <- aov(k ~ restoration + management, data = tbi_data)  
+summary(anova_k)  # p-value restoration = 0.0126   # p-value management = 0.6775
+anova_k_comb <- aov(k ~ restoration * management, data = tbi_data)
+summary(anova_k_comb)  # p-value restoration:management = 0.2311
+
+# Tukey's test
+tukey_k <- TukeyHSD(anova_k)
+tukey_k
+
+# Table with factors, means and standard deviation using dplyr package
+# First I have to remove all the NAs from the data frame
+tbi_data <- na.omit(tbi_data)
+# Table
+table_k <- group_by(tbi_data, restoration, management) %>%
+  summarise(mean=mean(k), sd=sd(k)) %>%
+  arrange(desc(mean))
+table_k     # MANCANO GLI UNMANAGED
+
+# Barplot
+pmean_k <- ggplot(table_k, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Decomposition speed (k)")
+
+
+
+# Plotting all the barplots together
+pdf("2_tea_indexes/graphs/barplots.pdf", width = 12, height = 8)
+pmean_S
+pmean_k
+grid.arrange(pmean_S, pmean_k, nrow=1)
+dev.off()
+
+
 
 
 
