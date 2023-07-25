@@ -6,6 +6,8 @@ library(tidyverse)
 library(broom)
 library(AICcmodavg)
 library(lmtest)
+library(dplyr)
+library(gridExtra)
 
 setwd("C:/internship/") 
 
@@ -75,6 +77,58 @@ plot(mod_k2)
 
 
 ## TWO WAY ANOVA ##
+
+
+# To perform anova on S data I have to transform them
+# log transformation
+
+
+#### S ####
+
+# Transformation #
+tbi_data <- mutate(tbi_data, logS = log10(S))  # Now the data are log transformed
+# Let's see if homoscedasticity is present
+# One explanatory variable
+mod_S_log <- lm(logS ~ treatment, data = tbi_data, na.action = na.exclude)
+summary(mod_S_log)
+# Breusch-Pagan test
+bptest(mod_S_log)   # p-value = 0.0498
+# I reject the null hypothesis (heteroscedasticity is present) 
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_S_log)
+# Two explanatory variables
+mod_S_log2 <- lm(logS ~ restoration + management, data = tbi_data, na.action = na.exclude)
+summary(mod_S_log2)
+# Breusch-Pagan test
+bptest(mod_S_log2)   # p-value = 0.02177 (heteroscedasticity is present)
+# Visual method
+par(mfrow = c(2, 2))
+plot(mod_S_log2)
+
+# Two-way anova #
+# Even though the data are not normally distributed, I'll do the two-way anova as usual, being extra careful with the results
+anova_S <- aov(S ~ restoration + management, data = tbi_data)  
+summary(anova_S)  # p-value restoration = 0.00352   # p-value management = 0.52177
+anova_S_comb <- aov(S ~ restoration * management, data = tbi_data)
+summary(anova_S_comb)  # p-value restoration:management = 0.08246
+
+# Tukey's test
+tukey_S <- TukeyHSD(anova_S)
+tukey_S
+
+# Table
+table_S <- group_by(tbi_data, restoration, management) %>%
+  summarise(mean=mean(S), sd=sd(S)) %>%
+  arrange(desc(mean))
+table_S     # MANCANO GLI UNMANAGED
+
+# Barplot
+pmean_S <- ggplot(table_S, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
+geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Stabilization factor (S)")
+
+
+
 
 
 
