@@ -8,6 +8,7 @@ library(AICcmodavg)
 library(lmtest)
 library(dplyr)
 library(gridExtra)
+library(car)
 
 setwd("C:/internship/") 
 
@@ -17,7 +18,6 @@ tbi_data <- read.csv("2_tea_indexes/tea_indexes_sites.csv", header = TRUE, colCl
 
 ## HOMOSCEDASTICITY TEST ##
 # H0 = homoscedacity is present (residuals are distributed with equal variance)
-
 
 ### S ###
 
@@ -46,6 +46,16 @@ plot(mod_S2)
 
 
 
+### Bartlett’s test is a statistical test that is used to determine whether or not the variances between several groups are equal
+# Bartlett’s Test
+bartlett.test(S ~ treatment, data = tbi_data)  # p-value = 0.169 (the variance among each group is equal)
+
+
+### Levene’s test is used to check if the variances of a variable obtained for two or more groups are equal or not when data comes from a non-normal distribution
+leveneTest(S ~ treatment, data = tbi_data)  # p-value = 0.07506
+# there is no significant difference between the tested sample variances
+
+
 
 ### k ###
 
@@ -71,6 +81,15 @@ bptest(mod_k2)   # p-value = 0.7815
 # Visual method
 par(mfrow = c(2, 2))
 plot(mod_k2)
+
+
+### Bartlett’s Test
+bartlett.test(k ~ treatment, data = tbi_data)  # p-value = 0.01825 (the variance among each group is not equal)
+
+
+### Levene’s test
+leveneTest(k ~ treatment, data = tbi_data)  # p-value = 0.07506
+# there is no significant difference between the tested sample variances
 
 
 
