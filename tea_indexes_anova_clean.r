@@ -13,13 +13,14 @@ library(tidyverse)
 library(broom)
 library(dplyr)
 library(car)
+library(report)
 
 
 tbi_data <- read.csv("2_tea_indexes/tea_indexes_sites.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", "factor", "factor", "numeric", "numeric"))
 
 
 
-########################### ONE WAY ANOVA
+########################### ONE WAY ANOVA ########################### 
 
 # Question: are S and k different between the 4 treatments (RM, RU, NM, NU)?
 
@@ -91,6 +92,35 @@ aggregate(k ~ treatment,
 
 #### ANOVA ####
 
+summary(anova1_S)  # p-value = 0.00761
+summary(anova1_k)  # p-value = 0.0495 
 
 
+# Report results
+report(anova1_S)  # The effect of treatment is statistically significant and large
+report(anova1_k)  # The effect of treatment is statistically significant and medium
+
+
+
+#### Tukey HSD test ####
+
+TukeyHSD(anova1_S)  # Only RM-NM are significantly different in terms of Stabilization factor (p adj = 0.0051541)
+TukeyHSD(anova1_k)  # Only RM-NM are significantly different in terms of Stabilization factor (p adj = 0.0437630)
+
+# Plot
+plot(TukeyHSD(anova1_S))
+plot(TukeyHSD(anova1_k))
+
+
+
+
+
+########################### TWO WAY ANOVA ########################### 
+
+
+
+
+
+
+          
 
