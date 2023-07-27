@@ -100,29 +100,6 @@ dev.off()
 
 
 
-# one-way ANOVA      # I CANNOT APPLY ANOVA BECAUSE THE DATA ARE NOT NORMALLY DISTRIBUTED
-anova_litter <- aov(litter_massloss ~ code, data = mass_data)
-summary(anova_litter)  # significant (p-value = 0.0061)
-anova_litter_cg <- aov(litter_cg_massloss ~ code, data = mass_data)
-summary(anova_litter_cg)  # very significant (p-value = 1.03e-09)
-
-anova_green_l <- aov(green_l_massloss ~ code, data = mass_data)
-summary(anova_green_l)  # significant (p-value = 0.00027)
-anova_green_t <- aov(green_t_massloss ~ code, data = mass_data)
-summary(anova_green_t)  #very significant (p-value = 1.11e-06)
-anova_mean_green <- aov(mean_green ~ code, data = mass_data)                # mean value of North and South sides
-summary(anova_mean_green)  # very significant (p-value = 4.88e-08)
-
-anova_red_l <- aov(red_l_massloss ~ code, data = mass_data)
-summary(anova_red_l)  # non significant (p-value = 0.105)
-anova_red_t <- aov(red_t_massloss ~ code, data = mass_data)
-summary(anova_red_t)  # non significant (p-value = 0.685)
-anova_mean_red <- aov(mean_red ~ code, data = mass_data)
-summary(anova_mean_red)  # non significant (p-value = 0.0722)
-
-
-
-
 
 
 
