@@ -127,6 +127,122 @@ plot(TukeyHSD(anova1_k))
 
 
 
+#### Assumptions validation ####
+
+# ANOVA model
+anova2_S <- aov(S ~ restoration * management, data = tbi_data)
+anova2_k <- aov(k ~ restoration * management, data = tbi_data)
+
+
+## Checking normality ##
+
+# Visual method
+par(mfrow = c(1, 2))
+
+# S
+hist(anova2_S$residuals)  # histogram
+qqPlot(anova2_S$residuals, id = FALSE)  # QQ-plot
+
+# k
+hist(anova2_k$residuals)  # histogram
+qqPlot(anova2_k$residuals, id = FALSE)  # QQ-plot
+
+
+# Shapiro-Wilk test
+shapiro.test(anova2_S$residuals)  # p-value = 0.1662
+shapiro.test(anova2_k$residuals)  # p-value = 1.813e-05 (!)
+
+
+## Checking equality of variances (homogeneity) ##
+
+# Levene's test
+leveneTest(anova2_S)  # p-value = 0.07506 (variances are equal)
+leveneTest(anova2_k)  # p-value = 0.3397 (variances are equal)
+
+
+# Outliers
+
+# S
+ggplot(tbi_data) + aes(x = restoration, y = S) + geom_boxplot()
+ggplot(tbi_data) + aes(x = management, y = S) + geom_boxplot()
+
+# k
+ggplot(tbi_data) + aes(x = restoration, y = k) + geom_boxplot()
+ggplot(tbi_data) + aes(x = management, y = k) + geom_boxplot()
+
+
+
+#### Preliminary analyses ####
+
+
+# S
+group_by(tbi_data, restoration, management) %>%
+  summarise(
+    mean = round(mean(S, na.rm = TRUE), 5),
+    sd = round(sd(S, na.rm = TRUE), 5))
+# k
+group_by(tbi_data, restoration, management) %>%
+  summarise(
+    mean = round(mean(k, na.rm = TRUE), 8),
+    sd = round(sd(k, na.rm = TRUE), 8))
+
+
+# Plots
+
+# S
+tbi_data %>%
+  filter(!is.na(restoration)) %>%
+  ggplot() +
+  aes(x = management, y = S, fill = restoration) +
+  geom_boxplot()
+
+tbi_data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = S, fill = management) +
+  geom_boxplot()
+
+# k
+tbi_data %>%
+  filter(!is.na(restoration)) %>%
+  ggplot() +
+  aes(x = management, y = k, fill = restoration) +
+  geom_boxplot()
+
+tbi_data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = k, fill = management) +
+  geom_boxplot()
+
+
+
+#### ANOVA ####
+
+
+## Two-way ANOVA with interaction ##
+
+summary(anova2_S)  # p-value restoration:management = 0.08246
+summary(anova2_k)  # p-value restoration:management = 0.2311  
+
+# log transformation of k
+anova2_klog <- aov(logk ~ restoration * management, data = tbi_data)
+summary(anova2_klog)  # p-value = 0.26816
+
+
+## Two-way ANOVA without interaction ##
+
+anova2_S_noint <- aov(S ~ restoration + management, data = tbi_data)
+anova2_k_noint <- aov(k ~ restoration + management, data = tbi_data)
+summary(anova2_S_noint)  # p-value restoration = 0.00352  # p-value management = 0.52177
+summary(anova2_k_noint)  # p-value restoration = 0.0126  # p-value management = 0.6775
+
+# log transformation of k
+anova2_klog_noint <- aov(logk ~ restoration + management, data = tbi_data)
+summary(anova2_klog_noint)  # p-value restoration = 0.00582   # p-value management = 0.58990
+
+
+
 
 
 
