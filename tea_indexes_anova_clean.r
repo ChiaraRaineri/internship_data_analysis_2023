@@ -243,7 +243,34 @@ summary(anova2_klog_noint)  # p-value restoration = 0.00582   # p-value manageme
 
 
 
+#### Tukey HSD test ####
 
+TukeyHSD(anova2_S)  # Only restored:managed-near_natural:managed are significantly different (p adj = 0.0051541)
+TukeyHSD(anova2_k)  # Only restored:managed-near_natural:managed are significantly different (p adj = 0.0437630)
+
+
+# Plot
+par(mar = c(4.1, 13.5, 4.1, 2.1))
+plot(TukeyHSD(anova2_S, which = "restoration:management"), las = 2)
+plot(TukeyHSD(anova2_k, which = "restoration:management"), las = 2)
+
+
+
+### Visualization ###
+
+pmean_S <- ggplot(table_S, aes(x = factor(restoration), y = mean, fill = management, colour = management)) + 
+  geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Stabilization factor")
+pmean_S
+
+pmean_k <- ggplot(table_k, aes(x = factor(restoration), y = mean, fill = management, colour = management)) + 
+  geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Decomposition speed")
+pmean_k
+
+# Plotting all the barplots together
+pdf("2_tea_indexes/graphs/mean_differences.pdf", width = 12, height = 8)
+pmean_S
+pmean_k
+dev.off()
 
 
           
