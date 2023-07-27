@@ -95,10 +95,17 @@ aggregate(k ~ treatment,
 summary(anova1_S)  # p-value = 0.00761
 summary(anova1_k)  # p-value = 0.0495 
 
+          
+# log transformation of k
+tbi_data <- mutate(tbi_data, logk = log10(k))
+anova1_klog <- aov(logk ~ treatment, data = tbi_data)
+summary(anova1_klog)  # p-value = 0.0279
+
 
 # Report results
 report(anova1_S)  # The effect of treatment is statistically significant and large
 report(anova1_k)  # The effect of treatment is statistically significant and medium
+report(anova1_klog)  # The effect of treatment is statistically significant and medium
 
 
 
@@ -106,6 +113,7 @@ report(anova1_k)  # The effect of treatment is statistically significant and med
 
 TukeyHSD(anova1_S)  # Only RM-NM are significantly different in terms of Stabilization factor (p adj = 0.0051541)
 TukeyHSD(anova1_k)  # Only RM-NM are significantly different in terms of Stabilization factor (p adj = 0.0437630)
+          
 
 # Plot
 plot(TukeyHSD(anova1_S))
