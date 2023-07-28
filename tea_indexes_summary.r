@@ -1,4 +1,5 @@
 # This is the analysis for the S and k indexes of TBI
+# Some outliers were removed manually
 
 library(ggplot2)
 library(ggpubr)
@@ -28,7 +29,7 @@ summary(tbi_data)
 # Shapiro-Wilk test
 # Maybe it's not relevant
 shapiro.test(tbi_data$S)  # p-value = 0.08583
-shapiro.test(tbi_data$k)  # p-value = 2.261e-06  (!)
+shapiro.test(tbi_data$k)  # p-value = 0.005447  (!)
 
 
 # Q-Q plots
@@ -54,19 +55,19 @@ ggscatter(tbi_data, x = "S", y = "k",
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
           xlab = "Stabilization factor (S)", ylab = "Decomposition speed (k)")   
-# p-value = 6.87e-11 (S and k are correlated)
-# correlation coefficient = 0.6987242 (positive correlation)
+# p-value = 2.336e-10 (S and k are correlated)
+# correlation coefficient = 0.6923817 (positive correlation)
 
 
-## k is not normally distributed ##
+## k is not normally distributed ## (before outliers removal)
 
 # Kendall rank correlation test
 kendall <- cor.test(tbi_data$S, tbi_data$k,  method="kendall")
-kendall   # p-value = 1.316e-10    # correlation coefficient = 0.5415113
+kendall   # p-value = 1.81e-09    # correlation coefficient = 0.5151365 
 
 # Spearman rank correlation coefficient
 spearman <-cor.test(tbi_data$S, tbi_data$k,  method = "spearman")
-spearman   # p-value = 4.684e-13    # correlation coefficient = 0.7491232
+spearman   # p-value = 1.188e-11    # correlation coefficient = 0.7255432 
 
 
 
