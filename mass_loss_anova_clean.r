@@ -4,6 +4,7 @@
 # First I'll perform a one way anova using treatment as an independent variable
 # Then, I'll perform a two way anova using management and restoration as independent variables
 # The data are mass loss of litter from the sites, litter from the common garden, green tea and red tea
+# Outliers from litter common garden were removed manually
 
 
 
@@ -57,7 +58,7 @@ qqPlot(aov1_red$residuals, id = FALSE)  # QQ-plot
 
 # Shapiro-Wilk test
 shapiro.test(aov1_litter$residuals)  # p-value = 0.8736
-shapiro.test(aov1_cg$residuals)  # p-value = 0.01887 (!)
+shapiro.test(aov1_cg$residuals)  # p-value = 0.007613 (!)
 shapiro.test(aov1_green$residuals)  # p-value = 0.3145
 shapiro.test(aov1_red$residuals)  # p-value = 3.323e-06 (!)
 
@@ -66,7 +67,7 @@ shapiro.test(aov1_red$residuals)  # p-value = 3.323e-06 (!)
 
 # Levene's test
 leveneTest(litter_massloss ~ treatment, data = data)  # p-value = 0.08503 (variances are equal)
-leveneTest(litter_cg_massloss ~ treatment, data = data)  # p-value = 0.03292 (variances are not equal)
+leveneTest(litter_cg_massloss ~ treatment, data = data)  # p-value = 0.06824 (variances are equal)
 leveneTest(mean_green ~ treatment, data = data)  # p-value = 0.04074 (variances are not equal)
 leveneTest(mean_red ~ treatment, data = data)  # p-value = 0.9162 (variances are equal)
 
@@ -116,7 +117,7 @@ aggregate(mean_red ~ treatment,
 #### ANOVA ####
 
 summary(aov1_litter)  # p-value = 0.0291
-summary(aov1_cg)  # p-value = 4.38e-05 
+summary(aov1_cg)  # p-value = 1.63e-06 
 summary(aov1_green)  # p-value = 0.00616
 summary(aov1_red)  # p-value = 0.773
 
@@ -124,7 +125,8 @@ summary(aov1_red)  # p-value = 0.773
 # log transformation of litter common garden
 data <- mutate(data, loglitter_cg_massloss = log10(litter_cg_massloss))
 aov1_cglog <- aov(loglitter_cg_massloss ~ treatment, data = data)
-summary(aov1_cglog)  # p-value = 0.000714
+summary(aov1_cglog) # p-value = 5.12e-06
+shapiro.test(aov1_cglog$residuals)  # p-value = 0.4263
 
 # log transformation of green tea
 data <- mutate(data, logmean_green = log10(mean_green))
@@ -148,7 +150,7 @@ report(aov1_redlog)  # The effect of treatment is statistically not significant 
 #### Tukey HSD test ####
 
 TukeyHSD(aov1_litter)  # Only RM-NM are significantly different (p adj = 0.0227204)
-TukeyHSD(aov1_cglog)  # RM-NM (p adj = 0.0032580) and RM-NU (p adj = 0.0010617) are significantly different 
+TukeyHSD(aov1_cglog)  # RM-NM (p adj = 0.0000506), RM-NU (p adj = 0.0000118) and RU-RM (p adj = 0.0032223) are significantly different 
 TukeyHSD(aov1_green)  # RM-NM (p adj = 0.0068606) and RM-NU (p adj = 0.0281832) are significantly different
 TukeyHSD(aov1_redlog)  # No combination is significant
 
@@ -199,7 +201,7 @@ qqPlot(aov2_red$residuals, id = FALSE)  # QQ-plot
 
 # Shapiro-Wilk test
 shapiro.test(aov2_litter$residuals)  # p-value = 0.8736
-shapiro.test(aov2_cg$residuals)  # p-value = 0.01887 (!)
+shapiro.test(aov2_cg$residuals)  # p-value = 0.007613 (!)
 shapiro.test(aov2_green$residuals)  # p-value = 0.3145
 shapiro.test(aov2_red$residuals)  # p-value = 3.323e-06 (!)
 
@@ -208,7 +210,7 @@ shapiro.test(aov2_red$residuals)  # p-value = 3.323e-06 (!)
 
 # Levene's test
 leveneTest(aov2_litter)  # p-value = 0.08503 (variances are equal)
-leveneTest(aov2_cg)  # p-value = 0.03292 (variances are not equal)
+leveneTest(aov2_cg)  # p-value = 0.06824 (variances are equal)
 leveneTest(aov2_green)  # p-value = 0.04074 (variances are not equal)
 leveneTest(aov2_red)  # p-value = 0.9162 (variances are equal)
 
@@ -320,13 +322,13 @@ data %>%
 ## Two-way ANOVA with interaction ##
 
 summary(aov2_litter)  # p-value restoration:management = 0.013  (!)
-summary(aov2_cg)  # p-value restoration:management = 0.082941 
+summary(aov2_cg)  # p-value restoration:management = 0.02689  (!) 
 summary(aov2_green)  # p-value restoration:management = 0.15350
 summary(aov2_red)  # p-value restoration:management = 0.747
 
 # log transformation of litter from common garden
 aov2_cglog <- aov(loglitter_cg_massloss ~ restoration * management, data = data)
-summary(aov2_cglog)  # p-value = 0.127945
+summary(aov2_cglog)  # p-value = 0.02495 
 
 # log transformation of green tea
 aov2_greenlog <- aov(logmean_green ~ restoration * management, data = data)
@@ -345,13 +347,13 @@ aov2_green_noint <- aov(mean_green ~ restoration + management, data = data)
 aov2_red_noint <- aov(mean_red ~ restoration + management, data = data)
 
 summary(aov2_litter_noint)  # p-value restoration = 0.119  # p-value management = 0.567
-summary(aov2_cg_noint)  # p-value restoration = 0.000131  # p-value management = 0.011865
+summary(aov2_cg_noint)  # p-value restoration = 2.28e-05  # p-value management = 0.0032 
 summary(aov2_green_noint)  # p-value restoration = 0.00189  # p-value management = 0.37930
 summary(aov2_red_noint)  # p-value restoration = 0.971  # p-value management = 0.315
 
 # log transformation of litter from common garden
 aov2_cglog_noint <- aov(loglitter_cg_massloss ~ restoration + management, data = data)
-summary(aov2_cglog_noint)  # p-value restoration = 0.000771   # p-value management = 0.048263
+summary(aov2_cglog_noint)  # p-value restoration = 4.49e-05   # p-value management = 0.00806 
 
 # log transformation of green tea
 aov2_greenlog_noint <- aov(logmean_green ~ restoration + management, data = data)
@@ -366,7 +368,7 @@ summary(aov2_redlog_noint)  # p-value restoration = 0.907   # p-value management
 #### Tukey HSD test ####
 
 TukeyHSD(aov2_litter)  # Only restored:managed-near_natural:managed are significantly different (p adj = 0.0227204)
-TukeyHSD(aov2_cglog)  # restored:managed-near_natural:managed (p adj = 0.0032580) and near_natural:unmanaged-restored:managed (p adj = 0.0010617) are significantly different
+TukeyHSD(aov2_cglog)  # restored:managed-near_natural:managed (p adj = 0.0000506), near_natural:unmanaged-restored:managed (p adj = 0.0000118) and restored:unmanaged-restored:managed (p adj = 0.0032223) are significantly different
 TukeyHSD(aov2_green)  # restored:managed-near_natural:managed (p adj = 0.0068606) and near_natural:unmanaged-restored:managed (p adj = 0.0281832) are significantly different
 TukeyHSD(aov2_redlog)  # No significant differences
 
