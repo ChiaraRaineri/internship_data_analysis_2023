@@ -54,6 +54,10 @@ shapiro.test(anova1_k$residuals)  # p-value = 0.106
 
 ## Checking equality of variances (homogeneity) ##
 
+# Bartlett test
+bartlett.test(S ~ treatment, data = tbi_data)  # p-value = 0.169 (variances are equal)
+bartlett.test(k ~ treatment, data = tbi_data)  # p-value = 0.4764 (variances are equal)
+
 # Levene's test
 leveneTest(S ~ treatment, data = tbi_data)  # p-value = 0.07506 (variances are equal)
 leveneTest(k ~ treatment, data = tbi_data)  # p-value = 0.4404 (variances are equal)
