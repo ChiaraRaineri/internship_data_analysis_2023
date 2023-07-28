@@ -128,12 +128,7 @@ aov1_cglog <- aov(loglitter_cg_massloss ~ treatment, data = data)
 summary(aov1_cglog) # p-value = 5.12e-06
 shapiro.test(aov1_cglog$residuals)  # p-value = 0.4263
 
-# log transformation of green tea
-data <- mutate(data, logmean_green = log10(mean_green))
-aov1_greenlog <- aov(logmean_green ~ treatment, data = data)
-summary(aov1_greenlog)  # p-value = 0.00561 
-
-# log transformation of k
+# log transformation of red tea
 data <- mutate(data, logmean_red = log10(mean_red))
 aov1_redlog <- aov(logmean_red ~ treatment, data = data)
 summary(aov1_redlog)  # p-value = 0.658
@@ -330,10 +325,6 @@ summary(aov2_red)  # p-value restoration:management = 0.747
 aov2_cglog <- aov(loglitter_cg_massloss ~ restoration * management, data = data)
 summary(aov2_cglog)  # p-value = 0.02495 
 
-# log transformation of green tea
-aov2_greenlog <- aov(logmean_green ~ restoration * management, data = data)
-summary(aov2_greenlog)  # p-value = 0.12622
-
 # log transformation of red tea
 aov2_redlog <- aov(logmean_red ~ restoration * management, data = data)
 summary(aov2_redlog)  # p-value = 0.753
@@ -354,10 +345,6 @@ summary(aov2_red_noint)  # p-value restoration = 0.971  # p-value management = 0
 # log transformation of litter from common garden
 aov2_cglog_noint <- aov(loglitter_cg_massloss ~ restoration + management, data = data)
 summary(aov2_cglog_noint)  # p-value restoration = 4.49e-05   # p-value management = 0.00806 
-
-# log transformation of green tea
-aov2_greenlog_noint <- aov(logmean_green ~ restoration + management, data = data)
-summary(aov2_greenlog_noint)  # p-value restoration = 0.00183    # p-value management = 0.44345
 
 # log transformation of red tea
 aov2_redlog_noint <- aov(logmean_red ~ restoration + management, data = data)
