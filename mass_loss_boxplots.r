@@ -18,23 +18,52 @@ setwd("C:/internship/")     # Same version is also on RStudio
 # This data frame contains raw data from the field and the calculation of percentage mass loss
 # Mass loss is calculated as (initial_weight -  final_weight) / initial_weight
 
-mass_data <- read.csv("1_mass_loss/mass_loss_percentage.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
-mass_data
-
-str(data)   
-
-# Converting chr into factor using base R  # Not useful only practice
-# mass_data$site <- factor(mass_data$site, levels = c("Ellebaekengen", "Stolpehuse", "Trolle", "Lille_Linde", "Skt_Klemens", "Klem_krat", "Skallebanke", "Brahetrolle", "Lyng", "Lyng_krat", "Ommevej", "Ommekrat"))
-# mass_data$code <- factor(mass_data$code, levels = c("TRNM", "TRNU", "TRRM", "TRRU", "ODNM", "ODNU", "ODRM", "ODRU", "OMNM", "OMNU", "OMRM", "OMRU"))
+data_dist <- read.csv("1_mass_loss/mass_loss.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric"))
 
 
 
-# Summary statistics
-summary(mass_data)
+## UNITED GRAPHS ##
+
+litt <- ggplot(data_dist, aes(treatment, litter_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
+  theme_classic() +
+  labs(x="Treatment", y="Mass loss (%)") + 
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Litter from the sites") + theme(plot.title = element_text(face = "bold")) + 
+  scale_fill_brewer(palette="Paired")
+
+cg <- ggplot(data_dist, aes(treatment, litter_cg_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
+  theme_classic() +
+  labs(x="Treatment", y="Mass loss (%)") + 
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Litter from the common garden") + theme(plot.title = element_text(face = "bold")) + 
+  scale_fill_brewer(palette="Paired")
+
+pg <- ggplot(data_dist, aes(treatment, mean_green, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
+  theme_classic() +
+  labs(x="Treatment", y="Mass loss (%)") + 
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Green tea") + theme(plot.title = element_text(face = "bold")) + 
+  scale_fill_brewer(palette="Paired")
+
+pr <- ggplot(data_dist, aes(treatment, mean_red, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
+  theme_classic() +
+  labs(x="Treatment", y="Mass loss (%)") + 
+  theme(axis.title.x = element_blank()) + 
+  ggtitle("Rooibos tea") + theme(plot.title = element_text(face = "bold")) + 
+  scale_fill_brewer(palette="Paired") 
 
 
-# What do I have to do with the NAs? Should I remove the rows that contain them?
-# mass_data <- na.omit(mass_data)
+all <- ggarrange(litt, cg, pg, pr, labels = c("a.", "b.", "c.", "d."),
+          ncol = 2, nrow = 2)
+
+
+png("1_mass_loss/graphs/mass_loss_boxplots.png", res = 400, width = 3400, height = 2900)
+all
+dev.off()
+
+
+
+
 
 
 # for the green and red tea "l" means that it's the tea buried in the North side (together with the litter), while "t" means it was buried in the South side
