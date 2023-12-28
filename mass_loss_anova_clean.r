@@ -1,6 +1,3 @@
-# https://statsandr.com/blog/two-way-anova-in-r/#assumptions-of-a-two-way-anova
-
-
 # First I'll perform a one way anova using treatment as an independent variable
 # Then, I'll perform a two way anova using management and restoration as independent variables
 # The data are mass loss of litter from the sites, litter from the common garden, green tea and red tea
@@ -135,13 +132,8 @@ summary(aov1_red)  # p-value = 0.162
 # log transformation of litter common garden
 data <- mutate(data, loglitter_cg_massloss = log10(litter_cg_massloss))
 aov1_cglog <- aov(loglitter_cg_massloss ~ treatment, data = data)
-summary(aov1_cglog) # p-value = 5.12e-06
+summary(aov1_cglog)  # p-value = 5.12e-06
 shapiro.test(aov1_cglog$residuals)  # p-value = 0.4263
-
-# log transformation of red tea
-# data <- mutate(data, logmean_red = log10(mean_red))
-# aov1_redlog <- aov(logmean_red ~ treatment, data = data)
-# summary(aov1_redlog)  # p-value = 0.658
 
 
 # Report results
@@ -333,11 +325,8 @@ summary(aov2_red)  # p-value restoration:management = 0.6698
 
 # log transformation of litter from common garden
 aov2_cglog <- aov(loglitter_cg_massloss ~ restoration * management, data = data)
-summary(aov2_cglog)  # p-value = 0.02495 
+summary(aov2_cglog)  # p-value = 0.02495
 
-# log transformation of red tea
-# aov2_redlog <- aov(logmean_red ~ restoration * management, data = data)
-# summary(aov2_redlog)  # p-value = 0.753
 
 
 ## Two-way ANOVA without interaction ##
@@ -354,11 +343,7 @@ summary(aov2_red_noint)  # p-value restoration = 0.0578  # p-value management = 
 
 # log transformation of litter from common garden
 aov2_cglog_noint <- aov(loglitter_cg_massloss ~ restoration + management, data = data)
-summary(aov2_cglog_noint)  # p-value restoration = 4.49e-05   # p-value management = 0.00806 
-
-# log transformation of red tea
-# aov2_redlog_noint <- aov(logmean_red ~ restoration + management, data = data)
-# summary(aov2_redlog_noint)  # p-value restoration = 0.907   # p-value management = 0.222
+summary(aov2_cglog_noint)  # p-value restoration = 4.49e-05   # p-value management = 0.048263
 
 
 
@@ -396,7 +381,7 @@ dev.off()
 
 
 ### Visualization ### 2
-          
+
 plitter2 <- ggplot(table_litter, aes(x = factor(management), y = mean, fill = restoration, colour = restoration)) + 
   geom_bar(stat = "identity", position = "dodge") + theme(axis.title.x = element_blank()) + ggtitle("Litter from the sites")
 
@@ -417,4 +402,61 @@ pcg2
 pgreen2
 pred2
 dev.off()
+
+
+# PLOTTING BOXPLOTS
+
+
+conf_l <- data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = litter_massloss, fill = management) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(legend.title = element_blank()) +
+  labs(y= "Mass loss (%)", x = " ") +
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Litter from the sites") + theme(plot.title = element_text(face = "bold")) +
+  scale_fill_brewer(palette="Set2") +
+  scale_x_discrete(labels=c("Near natural","Restored"))
+  
+
+conf_cg <- data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = litter_cg_massloss, fill = management) +
+  geom_boxplot() + 
+  theme_classic() +
+  theme(legend.title = element_blank()) +
+  labs(y= "Mass loss (%)", x = " ") +
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Litter from common garden") + theme(plot.title = element_text(face = "bold")) +
+  scale_fill_brewer(palette="Set2") +
+  scale_x_discrete(labels=c("Near natural","Restored"))
+
+
+#ALTERNATIVO CONTORNO COMPLETO E RIGHE
+#data %>%
+#  filter(!is.na(management)) %>%
+#  ggplot() +
+#  aes(x = restoration, y = litter_massloss, fill = management) +
+#  geom_boxplot() + theme_bw() +
+#  theme(legend.title = element_blank()) +
+#  labs(y= "Mass loss (%)", x = " ") +
+#  theme(axis.title.x = element_blank()) +
+#  ggtitle("Litter from the sites") + theme(plot.title = element_text(face = "bold")) +
+#  scale_fill_brewer(palette="Set2") +
+#  scale_x_discrete(labels=c("Near natural","Restored"))
+
+
+
+conf_litt <- ggarrange(conf_l, conf_cg, labels = c("a.", "b."),
+                       ncol = 2, nrow = 1)
+
+
+png("1_mass_loss/graphs/confronto_litter.png", res = 300, width = 3000, height = 1000)
+conf_litt
+dev.off()
+
+
 
