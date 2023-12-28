@@ -1,6 +1,3 @@
-# based on https://statsandr.com/blog/two-way-anova-in-r/#assumptions-of-a-two-way-anova
-
-
 # First I'll perform a one way anova using treatment as an independent variable
 # Then, I'll perform a two way anova using management and restoration as independent variables
 # The data are S (stabilization factor) and k (decomposition speed)
@@ -58,11 +55,6 @@ shapiro.test(anova1_k$residuals)  # p-value = 0.106
 bartlett.test(S ~ treatment, data = tbi_data)  # p-value = 0.169 (variances are equal)
 bartlett.test(k ~ treatment, data = tbi_data)  # p-value = 0.4764 (variances are equal)
 
-# Levene's test
-leveneTest(S ~ treatment, data = tbi_data)  # p-value = 0.07506 (variances are equal)
-leveneTest(k ~ treatment, data = tbi_data)  # p-value = 0.4404 (variances are equal)
-
-
 # Visual method
 par(mfrow = c(1, 2))
 
@@ -94,7 +86,7 @@ aggregate(k ~ treatment,
 summary(anova1_S)  # p-value = 0.00761
 summary(anova1_k)  # p-value = 0.0154 
 
-          
+
 # log transformation of k
 # tbi_data <- mutate(tbi_data, logk = log10(k))
 # anova1_klog <- aov(logk ~ treatment, data = tbi_data)
@@ -103,8 +95,7 @@ summary(anova1_k)  # p-value = 0.0154
 
 # Report results
 report(anova1_S)  # The effect of treatment is statistically significant and large
-report(anova1_k)  # The effect of treatment is statistically significant and medium
-# report(anova1_klog)  # The effect of treatment is statistically significant and medium
+report(anova1_k)  # The effect of treatment is statistically significant and large
 
 
 
@@ -112,7 +103,6 @@ report(anova1_k)  # The effect of treatment is statistically significant and med
 
 TukeyHSD(anova1_S)  # Only RM-NM are significantly different in terms of Stabilization factor (p adj = 0.0051541)
 TukeyHSD(anova1_k)  # Only RU-NM are significantly different in terms of Stabilization factor (p adj = 0.0361558)
-          
 
 # Plot
 plot(TukeyHSD(anova1_S))
@@ -175,12 +165,12 @@ ggplot(tbi_data) + aes(x = management, y = k) + geom_boxplot()
 
 
 # S
-group_by(tbi_data, restoration, management) %>%
+table_S <- group_by(tbi_data, restoration, management) %>%
   summarise(
     mean = round(mean(S, na.rm = TRUE), 5),
     sd = round(sd(S, na.rm = TRUE), 5))
 # k
-group_by(tbi_data, restoration, management) %>%
+table_k <- group_by(tbi_data, restoration, management) %>%
   summarise(
     mean = round(mean(k, na.rm = TRUE), 8),
     sd = round(sd(k, na.rm = TRUE), 8))
@@ -224,22 +214,14 @@ tbi_data %>%
 summary(anova2_S)  # p-value restoration:management = 0.08246
 summary(anova2_k)  # p-value restoration:management = 0.73619  
 
-# log transformation of k
-# anova2_klog <- aov(logk ~ restoration * management, data = tbi_data)
-# summary(anova2_klog)  # p-value = 0.26816
-
 
 ## Two-way ANOVA without interaction ##
 
 anova2_S_noint <- aov(S ~ restoration + management, data = tbi_data)
 anova2_k_noint <- aov(k ~ restoration + management, data = tbi_data)
-          
+
 summary(anova2_S_noint)  # p-value restoration = 0.00352  # p-value management = 0.52177
 summary(anova2_k_noint)  # p-value restoration = 0.00154  # p-value management = 0.57096
-
-# log transformation of k
-# anova2_klog_noint <- aov(logk ~ restoration + management, data = tbi_data)
-# summary(anova2_klog_noint)  # p-value restoration = 0.00582   # p-value management = 0.58990
 
 
 
@@ -273,5 +255,43 @@ pmean_k
 dev.off()
 
 
-          
+
+# BOXPLOTS
+
+conf_S <- tbi_data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = S, fill = management) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(legend.title = element_blank()) +
+  labs(y= "S", x = " ") +
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Stabilization factor (S)") + theme(plot.title = element_text(face = "bold")) +
+  scale_fill_brewer(palette="Set2") +
+  scale_x_discrete(labels=c("Near natural","Restored"))
+
+
+conf_k <- tbi_data %>%
+  filter(!is.na(management)) %>%
+  ggplot() +
+  aes(x = restoration, y = k, fill = management) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(legend.title = element_blank()) +
+  labs(y= "k", x = " ") +
+  theme(axis.title.x = element_blank()) +
+  ggtitle("Decomposition rate (k)") + theme(plot.title = element_text(face = "bold")) +
+  scale_fill_brewer(palette="Set2") +
+  scale_x_discrete(labels=c("Near natural","Restored"))
+
+
+conf_tbi <- ggarrange(conf_S, conf_k, labels = c("a.", "b."),
+                       ncol = 2, nrow = 1)
+
+
+png("2_tea_indexes/graphs/confronto_tbi.png", res = 300, width = 3000, height = 1000)
+conf_tbi
+dev.off()
+
 
