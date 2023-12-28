@@ -10,6 +10,9 @@ library(ggpubr)
 library(tidyverse)
 library(broom)
 library(AICcmodavg)
+library(lmtest)
+library(viridis)
+library(RColorBrewer)
 
 setwd("C:/internship/")     # Same version is also on RStudio
 
@@ -20,6 +23,73 @@ setwd("C:/internship/")     # Same version is also on RStudio
 
 data_dist <- read.csv("1_mass_loss/mass_loss.csv", header = TRUE, colClasses = c("factor", "factor", "factor", "factor", "numeric", "numeric", "numeric", "numeric"))
 
+str(data_dist)
+summary(data_dist)
+
+
+# Let's start with some boxplots with the treatments for every parameter
+
+# LITTER
+# plitt2 <- ggplot(data_dist, aes(treatment, litter_massloss, fill = treatment)) + geom_boxplot(notch = TRUE, show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
+#   ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
+#   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+#   scale_fill_brewer(palette="Paired") + ylim(0,1)
+
+plitt2 <- ggplot(data_dist, aes(treatment, litter_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
+  ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
+  
+# LITTER FROM COMMON GARDEN
+plittcg2 <- ggplot(data_dist, aes(treatment, litter_cg_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
+  ggtitle("Litter from the common garden") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
+
+# GREEN TEA
+pmg2 <- ggplot(data_dist, aes(treatment, mean_green, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
+  ggtitle("Mean values of green tea") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
+
+# RED TEA
+pmr2 <- ggplot(data_dist, aes(treatment, mean_red, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
+  ggtitle("Mean values of red tea") + theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  scale_fill_brewer(palette="Paired") + ylim(0,1)
+
+
+
+pdf("plots_treatment.pdf", width = 12, height = 8)
+plitt2
+plittcg2
+pmg2
+pmr2
+dev.off()
+
+png("1_mass_loss/graphs/treatment_litter.png", res = 300, width = 3400, height = 1900)
+plitt2
+dev.off()
+png("1_mass_loss/graphs/treatment_cg.png", res = 300, width = 3400, height = 1900)
+plittcg2
+dev.off()
+png("1_mass_loss/graphs/treatment_green.png", res = 300, width = 3400, height = 1900)
+pmg2
+dev.off()
+png("1_mass_loss/graphs/treatment_red.png", res = 300, width = 3400, height = 1900)
+pmr2
+dev.off()
+
+
+
+# Histograms # Frequency of mass loss intervals
+par(mfrow = c(2,2))
+hist(data_dist$litter_massloss, xlab = "Percentage of mass loss", main = "Litter from the sites")
+hist(data_dist$litter_cg_massloss, xlab = "Percentage of mass loss", main = "Litter from common garden")
+hist(data_dist$mean_green, xlab = "Percentage of mass loss", main = "Green tea")
+hist(data_dist$mean_red, xlab = "Percentage of mass loss", main = "Red tea")
+
+
 
 
 ## UNITED GRAPHS ##
@@ -28,14 +98,14 @@ litt <- ggplot(data_dist, aes(treatment, litter_massloss, fill = treatment)) + g
   theme_classic() +
   labs(x="Treatment", y="Mass loss (%)") + 
   theme(axis.title.x = element_blank()) +
-  ggtitle("Litter from the sites") + theme(plot.title = element_text(face = "bold")) + 
+  ggtitle("Litter at home site") + theme(plot.title = element_text(face = "bold")) + 
   scale_fill_brewer(palette="Paired")
 
 cg <- ggplot(data_dist, aes(treatment, litter_cg_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
   theme_classic() +
   labs(x="Treatment", y="Mass loss (%)") + 
   theme(axis.title.x = element_blank()) +
-  ggtitle("Litter from the common garden") + theme(plot.title = element_text(face = "bold")) + 
+  ggtitle("Litter in common garden") + theme(plot.title = element_text(face = "bold")) + 
   scale_fill_brewer(palette="Paired")
 
 pg <- ggplot(data_dist, aes(treatment, mean_green, fill = treatment)) + geom_boxplot(show.legend = FALSE) + 
@@ -62,98 +132,19 @@ all
 dev.off()
 
 
+# png("1_mass_loss/graphs/mass_loss_boxplots.png", res = 300, width = 3400, height = 1900)
 
 
 
-
-# for the green and red tea "l" means that it's the tea buried in the North side (together with the litter), while "t" means it was buried in the South side
-# cg means "common garden"
-
-
-
-# boxplots 
-# litter
-plitt <- ggplot(mass_data, aes(code, litter_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
-ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# litter common garden
-plittcg <- ggplot(mass_data, aes(code, litter_cg_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
-ggtitle("Litter from the common garden") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# green tea (l)
-pgl <- ggplot(mass_data, aes(code, green_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
-ggtitle("Green tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# red tea (l)
-prl <- ggplot(mass_data, aes(code, red_l_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() +
-ggtitle("Red tea from North side") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# green tea (t)
-pgt <- ggplot(mass_data, aes(code, green_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
-ggtitle("Green tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# red tea (t)
-prt <- ggplot(mass_data, aes(code, red_t_massloss, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
-ggtitle("Red tea from South side") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-# mean green teas from N and S
-pmg <- ggplot(mass_data, aes(code, mean_green, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
-  ggtitle("Mean values of green teas") + theme(plot.title = element_text(hjust = 0.5)) + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  scale_fill_brewer(palette="Paired") + ylim(0,1)
-# mean red teas from N and S
-pmr <- ggplot(mass_data, aes(code, mean_red, fill = code)) + geom_boxplot(show.legend = FALSE) + labs(x="Site", y="Mass loss") + theme_bw() + 
-  ggtitle("Mean values of red teas") + theme(plot.title = element_text(hjust = 0.5)) + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  scale_fill_brewer(palette="Paired") + ylim(0,1)
-
-
-pdf("plots_raw_data_same_scale.pdf", width = 12, height = 8)
-plitt
-plittcg
-pgl
-pgt
-pmg
-prl
-prt
-pmr
+all2 <- ggarrange(litt, cg, ncol = 2, nrow = 1)
+png("1_mass_loss/graphs/only_litter.png", res = 300, width = 3000, height = 1000)
+all2
 dev.off()
 
-
-
-
-# boxplots for treatment
-
-# LITTER
-plitt2 <- ggplot(data_dist, aes(treatment, litter_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
-ggtitle("Litter from the sites") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-
-# LITTER FROM COMMON GARDEN
-plittcg2 <- ggplot(data_dist, aes(treatment, litter_cg_massloss, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
-ggtitle("Litter from the common garden") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-
-# GREEN TEA
-pmg2 <- ggplot(data_dist, aes(treatment, mean_green, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
-ggtitle("Mean values of green tea") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-
-# RED TEA
-pmr2 <- ggplot(data_dist, aes(treatment, mean_red, fill = treatment)) + geom_boxplot(show.legend = FALSE) + labs(x="Treatment", y="Mass loss") + theme_bw() +
-ggtitle("Mean values of red tea") + theme(plot.title = element_text(hjust = 0.5)) + 
-theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-scale_fill_brewer(palette="Paired") + ylim(0,1)
-
+all3 <- ggarrange(pg, pr, ncol = 2, nrow = 1)
+png("1_mass_loss/graphs/only_tea.png", res = 300, width = 3000, height = 1000)
+all3
+dev.off()
 
 
 
